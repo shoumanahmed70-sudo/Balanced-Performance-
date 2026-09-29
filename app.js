@@ -1882,32 +1882,65 @@ function compressImage(file, maxWidth = 1000, quality = 0.72) {
 // 3. تهيئة النظام الحقيقي الخالي من المعاملات التجريبية
 // =============================================================================
 function initializeDataStore() {
-  // كروت الصيانة تبدأ فارغة تماماً بدون أي معاملات تجريبية
+  // 1. استعادة وترحيل البيانات السابقة تلقائياً إن وجدت من مفاتيح الإصدارات السابقة (لضمان عدم فقدان أي بيانات أدخلها المستخدم)
+  const legacyMap = [
+    { target: STORAGE_KEYS.USERS, legacy: 'balanced_users_v1' },
+    { target: STORAGE_KEYS.PROJECTS, legacy: 'balanced_projects_v1' },
+    { target: STORAGE_KEYS.VEHICLES, legacy: 'balanced_vehicles_v1' },
+    { target: STORAGE_KEYS.CARDS, legacy: 'balanced_cards_v1' }
+  ];
+
+  legacyMap.forEach(item => {
+    if (!localStorage.getItem(item.target) || localStorage.getItem(item.target) === '[]') {
+      const oldVal = localStorage.getItem(item.legacy);
+      if (oldVal && oldVal !== '[]') {
+        localStorage.setItem(item.target, oldVal);
+      }
+    }
+  });
+
+  // 2. إذا كانت قاعدة البيانات فارغة تماماً (مثل متصفح جديد أو هاتف أو الدومين لأول مرة)، نزرع البيانات التأسيسية
+  // بحيث لا تظهر الشاشات بأصفار أو فارغة لأي شخص يفتح الرابط
+  if (!localStorage.getItem(STORAGE_KEYS.PROJECTS) || localStorage.getItem(STORAGE_KEYS.PROJECTS) === '[]') {
+    const defaultProjects = [
+      {
+        id: 'prj-main-01',
+        code: 'PRJ-2026-01',
+        name: 'مشروع قطاع الإنشاءات والصيانة',
+        location: 'الرياض',
+        manager: 'المهندس المشرف',
+        status: 'active',
+        createdAt: '2026-01-01'
+      }
+    ];
+    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify(defaultProjects));
+  }
+
+  if (!localStorage.getItem(STORAGE_KEYS.VEHICLES) || localStorage.getItem(STORAGE_KEYS.VEHICLES) === '[]') {
+    const defaultVehicles = [
+      {
+        id: 'veh-main-01',
+        plate: 'أ ب ج 1234',
+        model: 'تويوتا هايلوكس',
+        year: 2024,
+        projectId: 'prj-main-01',
+        driver: 'أحمد السائق',
+        currentOdometer: 145000,
+        lastServiceDate: '2026-09-01'
+      }
+    ];
+    localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify(defaultVehicles));
+  }
+
   if (!localStorage.getItem(STORAGE_KEYS.CARDS)) {
     localStorage.setItem(STORAGE_KEYS.CARDS, JSON.stringify([]));
   }
 
-  // المشاريع تبدأ بقائمة فارغة ليدخل المدير مشاريعه الحقيقية
-  if (!localStorage.getItem(STORAGE_KEYS.PROJECTS)) {
-    localStorage.setItem(STORAGE_KEYS.PROJECTS, JSON.stringify([]));
-  }
-
-  // أسطول المركبات يبدأ فارغاً
-  if (!localStorage.getItem(STORAGE_KEYS.VEHICLES)) {
-    localStorage.setItem(STORAGE_KEYS.VEHICLES, JSON.stringify([]));
-  }
-
-  // المستخدمين: يتم التحقق إذا كان هناك مدير مسجل أو الحاجة للإعداد لأول مرة
-  if (!localStorage.getItem(STORAGE_KEYS.USERS)) {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify([]));
-  }
-
-  // سجل التدقيق
   if (!localStorage.getItem(STORAGE_KEYS.AUDIT)) {
     localStorage.setItem(STORAGE_KEYS.AUDIT, JSON.stringify([]));
   }
 
-  // المستخدمين: التأكد من وجود حساب المدير الرئيسي دائماً لعدم ظهور شاشة الإعداد لكل زائر أو على الهواتف الأخرى
+  // المستخدمين: التأكد من وجود حساب المدير الرئيسي وحساب السائق الافتراضي دائماً
   let users = [];
   try {
     users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
@@ -1915,8 +1948,8 @@ function initializeDataStore() {
     users = [];
   }
 
+  // إضافة حساب المدير الرئيسي إن لم يكن موجوداً
   if (!users.some(u => u.role === 'admin')) {
-    // حساب المدير الرئيسي الافتراضي للنظام للتشغيل الفوري بدون مشاكل
     users.unshift({
       id: 'usr-admin-primary',
       username: 'admin',
@@ -1931,8 +1964,27 @@ function initializeDataStore() {
       isSuperAdmin: true,
       createdAt: new Date().toISOString()
     });
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
   }
+
+  // إضافة حساب السائق أحمد لتجربة الدخول ومعاينة عزل البيانات فوراً على أي هاتف
+  if (!users.some(u => u.username === 'ahmed')) {
+    users.push({
+      id: 'usr-tech-ahmed',
+      username: 'ahmed',
+      passwordHash: '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92', // SHA-256 of '123456'
+      password: '123456',
+      fullName: 'أحمد السائق',
+      role: 'technician',
+      roleTitle: 'سائق مركبة / فني صيانة',
+      projectId: 'prj-main-01',
+      vehiclePlate: 'أ ب ج 1234',
+      phone: '0500000000',
+      status: 'active',
+      createdAt: new Date().toISOString()
+    });
+  }
+
+  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
 }
 
 // =============================================================================
