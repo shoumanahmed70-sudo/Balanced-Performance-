@@ -2009,72 +2009,13 @@ function showToast(message, type = 'success') {
 // =============================================================================
 
 function checkFirstTimeAdminSetup() {
-  const setupBox = document.getElementById('first-time-setup-box');
   const loginBox = document.getElementById('regular-login-box');
-
-  // شاشة تسجيل الدخول هي دائماً الشاشة الافتراضية الثابتة لكافة الزوار والسائقين
-  if (setupBox) setupBox.classList.add('hidden');
   if (loginBox) loginBox.classList.remove('hidden');
   return true;
 }
 
-function toggleSetupAdminBox(showSetup) {
-  const setupBox = document.getElementById('first-time-setup-box');
-  const loginBox = document.getElementById('regular-login-box');
-
-  if (showSetup) {
-    if (setupBox) setupBox.classList.remove('hidden');
-    if (loginBox) loginBox.classList.add('hidden');
-  } else {
-    if (setupBox) setupBox.classList.add('hidden');
-    if (loginBox) loginBox.classList.remove('hidden');
-  }
-}
-
-async function handleInitialAdminRegister(event) {
-  event.preventDefault();
-
-  const fullName = document.getElementById('setup-fullname').value.trim();
-  const username = document.getElementById('setup-username').value.trim().toLowerCase();
-  const phone = document.getElementById('setup-phone').value.trim();
-  const password = document.getElementById('setup-password').value;
-  const passwordConfirm = document.getElementById('setup-password-confirm').value;
-
-  if (password !== passwordConfirm) {
-    showToast('كلمة المرور وتأكيد كلمة المرور غير متطابقين!', 'error');
-    return;
-  }
-
-  if (password.length < 5) {
-    showToast('يرجى اختيار كلمة مرور قوية مكونة من 5 خانات على الأقل', 'warning');
-    return;
-  }
-
-  const users = JSON.parse(localStorage.getItem(STORAGE_KEYS.USERS) || '[]');
-
-  const newAdmin = {
-    id: 'usr-admin-' + Date.now(),
-    username,
-    passwordHash: await hashPassword(password),
-    fullName,
-    role: 'admin',
-    roleTitle: 'المدير العام الرئيسي',
-    projectId: '',
-    phone,
-    status: 'active',
-    isSuperAdmin: true,
-    createdAt: new Date().toISOString()
-  };
-
-  users.push(newAdmin);
-  localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
-  cloudSave('users', newAdmin.id, newAdmin);
-
-  logAudit('تهيئة المدير الرئيسي', `تم إنشاء الحساب الإداري للشركة: ${fullName}`, username);
-  showToast('تم حفظ حساب المدير بنجاح! جاري الدخول للنظام...', 'success');
-
-  setSessionUser(newAdmin);
-  updateAppUI();
+function toggleSetupAdminBox() {
+  // تم إلغاء أي تسجيل عام خارجي نهائياً لضمان أمان النظام ومنع الاختراق
 }
 
 async function handleLogin(event) {

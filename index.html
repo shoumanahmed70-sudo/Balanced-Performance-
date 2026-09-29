@@ -87,60 +87,7 @@
         </div>
       </div>
 
-      <!-- نموذج 1: إعداد النظام لأول مرة وتسجيل حساب المدير الرئيسي (يظهر تلقائياً إذا لم يكن هناك مدير مسجل) -->
-      <div id="first-time-setup-box" class="hidden">
-        <div class="first-setup-notice">
-          <i class="fa-solid fa-sparkles"></i>
-          <div>
-            <strong data-i18n="setupTitle">إعداد النظام لأول مرة:</strong>
-            <p style="margin: 0; font-size: 0.8rem;" data-i18n="setupDesc">قم بإنشاء حساب المدير الرئيسي للشركة لتهيئة النظام وتعيين الصلاحيات.</p>
-          </div>
-        </div>
-
-        <form id="setup-admin-form" class="auth-form" onsubmit="handleInitialAdminRegister(event)">
-          <div class="form-group">
-            <label for="setup-fullname"><i class="fa-solid fa-user-tie"></i> <span data-i18n="lblSetupFullName">اسم المدير العام بالكامل</span> <span class="req">*</span></label>
-            <input type="text" id="setup-fullname" class="form-control" data-i18n-placeholder="phSetupFullName" placeholder="مثال: المهندس محمد العتيبي" required>
-          </div>
-
-          <div class="form-group">
-            <label for="setup-username"><i class="fa-solid fa-at"></i> <span data-i18n="lblSetupUsername">اسم المستخدم لتسجيل الدخول</span> <span class="req">*</span></label>
-            <input type="text" id="setup-username" class="form-control" data-i18n-placeholder="phSetupUsername" placeholder="مثال: admin" required autocomplete="username">
-          </div>
-
-          <div class="form-group">
-            <label for="setup-phone"><i class="fa-solid fa-phone"></i> <span data-i18n="lblPhone">رقم الجوال</span></label>
-            <input type="tel" id="setup-phone" class="form-control" placeholder="05XXXXXXXX">
-          </div>
-
-          <div class="form-group">
-            <label for="setup-password"><i class="fa-solid fa-lock"></i> <span data-i18n="lblSetupPassword">كلمة المرور للمدير</span> <span class="req">*</span></label>
-            <div class="password-input-wrap">
-              <input type="password" id="setup-password" class="form-control" data-i18n-placeholder="phPassword" placeholder="أدخل كلمة مرور قوية" required autocomplete="new-password">
-              <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setup-password')">
-                <i class="fa-regular fa-eye" id="setup-password-icon"></i>
-              </button>
-            </div>
-          </div>
-
-          <div class="form-group">
-            <label for="setup-password-confirm"><i class="fa-solid fa-shield-check"></i> <span data-i18n="lblSetupPasswordConfirm">تأكيد كلمة المرور</span> <span class="req">*</span></label>
-            <input type="password" id="setup-password-confirm" class="form-control" data-i18n-placeholder="phPasswordConfirm" placeholder="أعد إدخال كلمة المرور" required autocomplete="new-password">
-          </div>
-
-          <button type="submit" class="btn btn-accent btn-block btn-lg" id="btn-setup-admin">
-            <i class="fa-solid fa-user-shield"></i> <span data-i18n="btnSetupAdmin">إنشاء حساب المدير الرئيسي وبدء التشغيل</span>
-          </button>
-
-          <div style="text-align: center; margin-top: 14px;">
-            <button type="button" class="btn-link-subtle" onclick="toggleSetupAdminBox(false)">
-              <i class="fa-solid fa-arrow-right"></i> <span data-i18n="linkBackToLogin">العودة لشاشة تسجيل الدخول</span>
-            </button>
-          </div>
-        </form>
-      </div>
-
-      <!-- نموذج 2: تسجيل الدخول النظيف (بدون أي حسابات تجريبية أو أزرار جانبية) -->
+      <!-- نموذج تسجيل الدخول الرسمي المحمي (بدون أي خيارات تسجيل عامة لمنع الاختراق) -->
       <div id="regular-login-box">
         <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
           <div class="form-group">
@@ -165,17 +112,6 @@
           <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">
             <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="btnLogin">تسجيل الدخول</span>
           </button>
-
-          <div class="login-hint-badge">
-            <i class="fa-solid fa-key" style="color: var(--color-accent);"></i>
-            <span data-i18n="defaultAdminHint">بيانات المدير الافتراضية للتشغيل الفوري: اسم المستخدم: <strong>admin</strong> | كلمة المرور: <strong>admin</strong></span>
-          </div>
-
-          <div style="text-align: center; margin-top: 10px;">
-            <button type="button" class="btn-link-subtle" onclick="toggleSetupAdminBox(true)">
-              <i class="fa-solid fa-user-gear"></i> <span data-i18n="linkSetupNewAdmin">إعداد أو إنشاء حساب مدير رئيسي جديد</span>
-            </button>
-          </div>
         </form>
       </div>
 
