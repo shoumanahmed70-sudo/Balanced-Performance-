@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام كروت صيانة المركبات | شركة الأداء المتوازن للمقاولات</title>
+  
+  <!-- خط القاهرة من Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- مكتبة الأيقونات Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- ملف التنسيقات الرئيسي -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- شريط التنبيهات المنبثقة (Toasts) -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ==========================================================================
+       1. شاشة تسجيل الدخول وإنشاء المدير الأول (Clean Auth Screen)
+       ========================================================================== -->
+  <div id="auth-screen" class="auth-wrapper">
+    <div class="auth-card">
+      <!-- شريط اختيار اللغة في شاشة الدخول -->
+      <div class="auth-lang-bar">
+        <div class="lang-switch-box">
+          <i class="fa-solid fa-globe"></i>
+          <select class="lang-select" id="auth-lang-select" onchange="changeLanguage(this.value)">
+            <option value="ar">العربية (Arabic)</option>
+            <option value="en">English</option>
+            <option value="ur">اردو (Urdu)</option>
+            <option value="hi">हिन्दी (Hindi)</option>
+            <option value="bn">বাংলা (Bengali)</option>
+            <option value="tl">Tagalog (Filipino)</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="auth-header">
+        
+        <!-- شعار شركة الأداء المتوازن للمقاولات بالهوية البصرية الرسمية -->
+        <div class="auth-logo-box">
+          <svg viewBox="0 0 460 160" xmlns="http://www.w3.org/2000/svg" style="max-width: 100%; height: 75px;">
+            <!-- القوس الأخضر المتوازن -->
+            <path d="M 60 150 C 130 150, 205 130, 205 100 C 205 85, 175 75, 150 65 C 100 45, 90 20, 100 8 C 80 18, 70 40, 75 70 C 80 98, 105 125, 180 135 C 120 142, 75 125, 55 95 C 45 80, 50 60, 60 40 C 40 60, 35 90, 48 115 C 60 138, 80 150, 110 150 Z" fill="#0d8a4d"/>
+            
+            <!-- مجسمات الأبراج المعمارية (أزرق ملكي وأخضر) -->
+            <!-- البرج الأيسر كحلي -->
+            <polyline points="95,110 95,68 112,68 112,110" fill="none" stroke="#162e50" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+            <line x1="103" y1="78" x2="103" y2="105" stroke="#162e50" stroke-width="3" stroke-linecap="round"/>
+            
+            <!-- البرج الأوسط العالي كحلي مع قمة مائلة -->
+            <polygon points="122,110 122,35 138,20 138,110" fill="none" stroke="#162e50" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <line x1="130" y1="42" x2="130" y2="105" stroke="#162e50" stroke-width="3.5" stroke-linecap="round"/>
+
+            <!-- البرج الرئيسي الأخضر مع قمة مائلة -->
+            <polygon points="144,110 144,38 160,52 160,110" fill="none" stroke="#0d8a4d" stroke-width="5.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <line x1="152" y1="58" x2="152" y2="105" stroke="#0d8a4d" stroke-width="3.5" stroke-linecap="round"/>
+
+            <!-- البرج الأيمن أخضر -->
+            <polyline points="168,110 168,70 182,70 182,110" fill="none" stroke="#0d8a4d" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+            <line x1="175" y1="80" x2="175" y2="105" stroke="#0d8a4d" stroke-width="3" stroke-linecap="round"/>
+
+            <!-- الإطار الهندسي للنصوص -->
+            <!-- زاوية خضراء علوية يمنى -->
+            <path d="M 320 30 L 370 30 L 370 52" fill="none" stroke="#0d8a4d" stroke-width="2.5" stroke-linecap="round"/>
+            <!-- زاوية زرقاء سفلية يمنى -->
+            <path d="M 320 130 L 370 130 L 370 108" fill="none" stroke="#162e50" stroke-width="2.5" stroke-linecap="round"/>
+
+            <!-- النصوص الرسمية للهوية -->
+            <text x="315" y="44" font-family="'Cairo', sans-serif" font-size="25" font-weight="900" fill="#162e50" text-anchor="end">الأداء المتوازن</text>
+            <text x="365" y="65" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#1b365d" text-anchor="end" letter-spacing="1.2">ALADAA-ALMOTAWAZEN</text>
+            <text x="315" y="98" font-family="'Cairo', sans-serif" font-size="27" font-weight="900" fill="#0d8a4d" text-anchor="end">للمقاولات</text>
+            <text x="315" y="122" font-family="'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="600" fill="#475569" text-anchor="end">Contracting Co.</text>
+          </svg>
+        </div>
+
+        <h1 data-i18n="companyName">شركة الأداء المتوازن للمقاولات</h1>
+        <p class="auth-subtitle" data-i18n="authSubtitle">نظام المتابعة الفنية وكروت صيانة أسطول المركبات</p>
+        <div class="security-tag" data-i18n="securityTag">
+          <i class="fa-solid fa-shield-halved"></i> نظام حماية وعزل بيانات معتمد
+        </div>
+      </div>
+
+      <!-- نموذج 1: إعداد النظام لأول مرة وتسجيل حساب المدير الرئيسي (يظهر تلقائياً إذا لم يكن هناك مدير مسجل) -->
+      <div id="first-time-setup-box" class="hidden">
+        <div class="first-setup-notice">
+          <i class="fa-solid fa-sparkles"></i>
+          <div>
+            <strong data-i18n="setupTitle">إعداد النظام لأول مرة:</strong>
+            <p style="margin: 0; font-size: 0.8rem;" data-i18n="setupDesc">قم بإنشاء حساب المدير الرئيسي للشركة لتهيئة النظام وتعيين الصلاحيات.</p>
+          </div>
+        </div>
+
+        <form id="setup-admin-form" class="auth-form" onsubmit="handleInitialAdminRegister(event)">
+          <div class="form-group">
+            <label for="setup-fullname"><i class="fa-solid fa-user-tie"></i> <span data-i18n="lblSetupFullName">اسم المدير العام بالكامل</span> <span class="req">*</span></label>
+            <input type="text" id="setup-fullname" class="form-control" data-i18n-placeholder="phSetupFullName" placeholder="مثال: المهندس محمد العتيبي" required>
+          </div>
+
+          <div class="form-group">
+            <label for="setup-username"><i class="fa-solid fa-at"></i> <span data-i18n="lblSetupUsername">اسم المستخدم لتسجيل الدخول</span> <span class="req">*</span></label>
+            <input type="text" id="setup-username" class="form-control" data-i18n-placeholder="phSetupUsername" placeholder="مثال: admin" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="setup-phone"><i class="fa-solid fa-phone"></i> <span data-i18n="lblPhone">رقم الجوال</span></label>
+            <input type="tel" id="setup-phone" class="form-control" placeholder="05XXXXXXXX">
+          </div>
+
+          <div class="form-group">
+            <label for="setup-password"><i class="fa-solid fa-lock"></i> <span data-i18n="lblSetupPassword">كلمة المرور للمدير</span> <span class="req">*</span></label>
+            <div class="password-input-wrap">
+              <input type="password" id="setup-password" class="form-control" data-i18n-placeholder="phPassword" placeholder="أدخل كلمة مرور قوية" required autocomplete="new-password">
+              <button type="button" class="toggle-password" onclick="togglePasswordVisibility('setup-password')">
+                <i class="fa-regular fa-eye" id="setup-password-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="setup-password-confirm"><i class="fa-solid fa-shield-check"></i> <span data-i18n="lblSetupPasswordConfirm">تأكيد كلمة المرور</span> <span class="req">*</span></label>
+            <input type="password" id="setup-password-confirm" class="form-control" data-i18n-placeholder="phPasswordConfirm" placeholder="أعد إدخال كلمة المرور" required autocomplete="new-password">
+          </div>
+
+          <button type="submit" class="btn btn-accent btn-block btn-lg" id="btn-setup-admin">
+            <i class="fa-solid fa-user-shield"></i> <span data-i18n="btnSetupAdmin">إنشاء حساب المدير الرئيسي وبدء التشغيل</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- نموذج 2: تسجيل الدخول النظيف (بدون أي حسابات تجريبية أو أزرار جانبية) -->
+      <div id="regular-login-box">
+        <form id="login-form" class="auth-form" onsubmit="handleLogin(event)">
+          <div class="form-group">
+            <label for="login-username">
+              <i class="fa-solid fa-user"></i> <span data-i18n="lblUsername">اسم المستخدم</span>
+            </label>
+            <input type="text" id="login-username" class="form-control" data-i18n-placeholder="phUsername" placeholder="أدخل اسم المستخدم المسجل" required autocomplete="username">
+          </div>
+
+          <div class="form-group">
+            <label for="login-password">
+              <i class="fa-solid fa-lock"></i> <span data-i18n="lblPassword">كلمة المرور</span>
+            </label>
+            <div class="password-input-wrap">
+              <input type="password" id="login-password" class="form-control" data-i18n-placeholder="phLoginPassword" placeholder="أدخل كلمة المرور" required autocomplete="current-password">
+              <button type="button" class="toggle-password" onclick="togglePasswordVisibility('login-password')">
+                <i class="fa-regular fa-eye" id="login-password-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">
+            <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="btnLogin">تسجيل الدخول</span>
+          </button>
+        </form>
+      </div>
+
+      <div class="auth-footer">
+        <i class="fa-solid fa-lock"></i> <span data-i18n="authFooter">اتصال مشفر وآمن | شركة الأداء المتوازن للمقاولات</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       2. واجهة التطبيق الرئيسية بعد تسجيل الدخول
+       ========================================================================== -->
+  <div id="app-screen" class="app-wrapper hidden">
+    
+    <!-- الشريط العلوي الرئيسي (Navbar) -->
+    <header class="app-header">
+      <div class="header-right">
+        <div class="brand-info">
+          <!-- الشعار في الهيدر -->
+          <div class="brand-logo-img">
+            <svg viewBox="0 0 460 160" xmlns="http://www.w3.org/2000/svg" style="height: 42px; width: auto;">
+              <path d="M 60 150 C 130 150, 205 130, 205 100 C 205 85, 175 75, 150 65 C 100 45, 90 20, 100 8 C 80 18, 70 40, 75 70 C 80 98, 105 125, 180 135 C 120 142, 75 125, 55 95 C 45 80, 50 60, 60 40 C 40 60, 35 90, 48 115 C 60 138, 80 150, 110 150 Z" fill="#0d8a4d"/>
+              <polyline points="95,110 95,68 112,68 112,110" fill="none" stroke="#162e50" stroke-width="5" stroke-linejoin="round"/>
+              <polygon points="122,110 122,35 138,20 138,110" fill="none" stroke="#162e50" stroke-width="5.5" stroke-linejoin="round"/>
+              <polygon points="144,110 144,38 160,52 160,110" fill="none" stroke="#0d8a4d" stroke-width="5.5" stroke-linejoin="round"/>
+              <polyline points="168,110 168,70 182,70 182,110" fill="none" stroke="#0d8a4d" stroke-width="5" stroke-linejoin="round"/>
+              <path d="M 320 30 L 370 30 L 370 52" fill="none" stroke="#0d8a4d" stroke-width="2.5"/>
+              <path d="M 320 130 L 370 130 L 370 108" fill="none" stroke="#162e50" stroke-width="2.5"/>
+              <text x="315" y="44" font-family="'Cairo', sans-serif" font-size="25" font-weight="900" fill="#162e50" text-anchor="end">الأداء المتوازن</text>
+              <text x="365" y="65" font-family="'Segoe UI', Roboto, sans-serif" font-size="12" font-weight="800" fill="#1b365d" text-anchor="end">ALADAA-ALMOTAWAZEN</text>
+              <text x="315" y="98" font-family="'Cairo', sans-serif" font-size="27" font-weight="900" fill="#0d8a4d" text-anchor="end">للمقاولات</text>
+              <text x="315" y="122" font-family="'Segoe UI', Roboto, sans-serif" font-size="11.5" font-weight="600" fill="#475569" text-anchor="end">Contracting Co.</text>
+            </svg>
+          </div>
+          <div>
+            <h2 class="brand-name" data-i18n="companyName">شركة الأداء المتوازن للمقاولات</h2>
+            <span class="system-title" data-i18n="systemTitle">نظام كروت الصيانة الرقمية ومتابعة الأسطول</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <!-- تلميح خاص بالسائق/الفني يوضح السيارة المخصصة له فقط -->
+        <div id="tech-project-badge" class="project-pill hidden">
+          <i class="fa-solid fa-car-side"></i>
+          <span><span data-i18n="assignedVehicleToYou">المركبة المخصصة لك:</span> <strong id="current-tech-vehicle">--</strong></span>
+        </div>
+      </div>
+
+      <div class="header-left">
+        <!-- أداة اختيار لغة النظام -->
+        <div class="lang-switch-box">
+          <i class="fa-solid fa-globe"></i>
+          <select class="lang-select" id="app-lang-select" onchange="changeLanguage(this.value)">
+            <option value="ar">العربية</option>
+            <option value="en">English</option>
+            <option value="ur">اردو</option>
+            <option value="hi">हिन्दी</option>
+            <option value="bn">বাংলা</option>
+            <option value="tl">Tagalog</option>
+          </select>
+        </div>
+
+        <div class="user-profile-menu">
+          <div class="user-avatar" id="current-user-avatar">م</div>
+          <div class="user-meta">
+            <span class="user-fullname" id="current-user-fullname">اسم المستخدم</span>
+            <span class="user-role-badge" id="current-user-role">الدور</span>
+          </div>
+        </div>
+        <button class="btn btn-outline-danger btn-sm" onclick="handleLogout()" title="تسجيل الخروج">
+          <i class="fa-solid fa-arrow-right-from-bracket"></i>
+          <span class="hide-mobile" data-i18n="btnLogout">خروج</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- شريط التنقل للتبويبات (Navigation Tabs) -->
+    <nav class="app-nav">
+      <div class="nav-container">
+        <button class="nav-tab active" data-tab="cards" onclick="switchTab('cards')">
+          <i class="fa-solid fa-clipboard-list"></i> <span data-i18n="navCards">كروت الصيانة</span>
+        </button>
+        
+        <!-- تبويبات خاصة بالمديرين فقط -->
+        <button class="nav-tab admin-only hidden" data-tab="projects" onclick="switchTab('projects')">
+          <i class="fa-solid fa-diagram-project"></i> <span data-i18n="navProjects">إدارة المشاريع</span>
+        </button>
+        <button class="nav-tab admin-only hidden" data-tab="vehicles" onclick="switchTab('vehicles')">
+          <i class="fa-solid fa-car-side"></i> <span data-i18n="navVehicles">أسطول المركبات</span>
+        </button>
+        <button class="nav-tab admin-only hidden" data-tab="technicians" onclick="switchTab('technicians')">
+          <i class="fa-solid fa-users-gear"></i> <span data-i18n="navTechs">إدارة السائقين والفنيين</span>
+        </button>
+        <!-- التبويب الجديد لإدارة المديرين بناءً على طلب المستخدم -->
+        <button class="nav-tab admin-only hidden" data-tab="admins" onclick="switchTab('admins')">
+          <i class="fa-solid fa-user-shield"></i> <span data-i18n="navAdmins">إدارة المديرين</span>
+        </button>
+        <button class="nav-tab admin-only hidden" data-tab="analytics" onclick="switchTab('analytics')">
+          <i class="fa-solid fa-chart-pie"></i> <span data-i18n="navAnalytics">التقارير والنسخ الاحتياطي</span>
+        </button>
+
+        <div class="nav-actions">
+          <button class="btn btn-accent btn-sm" onclick="openNewCardModal()">
+            <i class="fa-solid fa-plus-circle"></i> <span data-i18n="btnNewCard">كرت صيانة جديد</span>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- الحاوية الرئيسية للمحتوى -->
+    <main class="app-main">
+      
+      <!-- شريط المؤشرات السريعة (KPI Counters) -->
+      <section class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-icon bg-blue">
+            <i class="fa-solid fa-file-invoice"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label" id="lbl-total-cards" data-i18n="lblTotalCards">إجمالي كروت الصيانة</span>
+            <h3 class="stat-val" id="stat-cards-count">0</h3>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-icon bg-green">
+            <i class="fa-solid fa-coins"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label" data-i18n="lblTotalCost">إجمالي تكاليف الصيانة</span>
+            <h3 class="stat-val"><span id="stat-total-cost">0</span> <small class="currency" data-i18n="currency">ر.س</small></h3>
+          </div>
+        </div>
+
+        <div class="stat-card admin-only hidden">
+          <div class="stat-icon bg-emerald">
+            <i class="fa-solid fa-building-circle-check"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label" id="lbl-active-projects" data-i18n="lblActiveProjects">المشاريع المرتبطة</span>
+            <h3 class="stat-val" id="stat-projects-count">0</h3>
+          </div>
+        </div>
+
+        <div class="stat-card admin-only hidden">
+          <div class="stat-icon bg-purple">
+            <i class="fa-solid fa-truck-moving"></i>
+          </div>
+          <div class="stat-info">
+            <span class="stat-label" id="lbl-fleet-count" data-i18n="lblFleetCount">المركبات المخدومة</span>
+            <h3 class="stat-val" id="stat-vehicles-count">0</h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 1: قائمة كروت الصيانة -->
+      <section id="tab-cards" class="tab-pane active">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-wrench"></i> <span data-i18n="cardsTitle">سجل كروت صيانة المركبات</span></h2>
+              <p class="text-muted" id="cards-view-caption" data-i18n="cardsViewCaption">عرض ومتابعة الفواتير والعدادات والقطع المستبدلة</p>
+            </div>
+            <div class="panel-controls d-flex align-center gap-2">
+              <!-- أداة التبديل بين عرض ملفات المشاريع والقطاعات وعرض كافة الكروت (خاص بالمدير فقط) -->
+              <div class="view-mode-toggle admin-only hidden" id="cards-view-toggle">
+                <button type="button" class="btn-toggle active" id="btn-view-dossiers" onclick="setCardsViewMode('dossiers')" title="عرض ملفات المشاريع والقطاعات">
+                  <i class="fa-solid fa-folder-tree"></i> <span data-i18n="viewByDossiers">ملفات المشاريع والقطاعات</span>
+                </button>
+                <button type="button" class="btn-toggle" id="btn-view-grid" onclick="setCardsViewMode('grid')" title="عرض كافة الكروت المجمعة">
+                  <i class="fa-solid fa-table-cells-large"></i> <span data-i18n="viewByCards">كافة الكروت</span>
+                </button>
+              </div>
+
+              <!-- زر عمل كرت صيانة جديد - متاح للفني والمدير -->
+              <button class="btn btn-accent" onclick="openNewCardModal()">
+                <i class="fa-solid fa-circle-plus"></i> <span data-i18n="btnCreateCardAction">عمل كرت صيانة جديد</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- شريط الفلاتر والبحث -->
+          <div class="filter-bar">
+            <div class="filter-item search-box">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="filter-search" class="form-control" data-i18n-placeholder="searchPlaceholder" placeholder="بحث برقم اللوحة، الموديل، الفاتورة أو التغييرات..." oninput="renderCardsList()">
+            </div>
+
+            <!-- فلتر المشروع للمديرين فقط -->
+            <div class="filter-item admin-only hidden" id="filter-project-wrapper">
+              <select id="filter-project" class="form-control" onchange="renderCardsList()">
+                <option value="" data-i18n="allProjects">جميع المشاريع</option>
+              </select>
+            </div>
+
+            <!-- فلتر الفني للمديرين فقط -->
+            <div class="filter-item admin-only hidden" id="filter-tech-wrapper">
+              <select id="filter-tech" class="form-control" onchange="renderCardsList()">
+                <option value="" data-i18n="allTechs">جميع السائقين / الفنيين</option>
+              </select>
+            </div>
+
+            <button class="btn btn-outline-secondary" onclick="resetCardsFilter()" title="إعادة تعيين الفلاتر">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+
+          <!-- شبكة بطاقات كروت الصيانة الحقيقية -->
+          <div id="cards-container" class="cards-grid">
+            <!-- يتم التوليد عبر JavaScript -->
+          </div>
+
+          <!-- في حال عدم وجود كروت صيانة مسجلة بعد -->
+          <div id="no-cards-msg" class="empty-state hidden">
+            <i class="fa-solid fa-folder-open empty-icon"></i>
+            <h3 id="no-cards-title" data-i18n="noCardsTitle">لا توجد كروت صيانة مسجلة حالياً</h3>
+            <p id="no-cards-desc" data-i18n="noCardsDesc">اضغط على زر "عمل كرت صيانة جديد" أعلاه لتسجيل عملية صيانة حقيقية للمركبة.</p>
+            <div style="margin-top: 14px;">
+              <button class="btn btn-accent" onclick="openNewCardModal()">
+                <i class="fa-solid fa-circle-plus"></i> <span data-i18n="btnCreateCardAction">عمل كرت صيانة جديد</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 2: إدارة المشاريع (خاص بالمديرين) -->
+      <section id="tab-projects" class="tab-pane hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-diagram-project"></i> <span data-i18n="projectsTitle">إدارة مشاريع شركة الأداء المتوازن</span></h2>
+              <p class="text-muted" data-i18n="projectsSubtitle">إضافة وحذف وتعديل مشاريع الشركة لربطها بالسيارات والسائقين</p>
+            </div>
+            <div class="panel-controls">
+              <button class="btn btn-primary" onclick="openNewProjectModal()">
+                <i class="fa-solid fa-plus"></i> <span data-i18n="btnAddProject">إضافة مشروع جديد</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thProjectCode">كود المشروع</th>
+                  <th data-i18n="thProjectName">اسم المشروع</th>
+                  <th data-i18n="thProjectLocation">موقع العمل / المدينة</th>
+                  <th data-i18n="thProjectManager">مدير الموقع</th>
+                  <th data-i18n="thVehiclesCount">عدد المركبات</th>
+                  <th data-i18n="thDriversCount">عدد السائقين</th>
+                  <th data-i18n="thStatus">حالة المشروع</th>
+                  <th data-i18n="thActions">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="projects-table-body">
+                <!-- مولد بالجافاسكربت -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 3: أسطول المركبات (خاص بالمديرين) -->
+      <section id="tab-vehicles" class="tab-pane hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-car-side"></i> <span data-i18n="vehiclesTitle">إدارة أسطول سيارات الشركة ومتابعة حركتها</span></h2>
+              <p class="text-muted" data-i18n="vehiclesSubtitle">قائمة المركبات وتعيين السائق المخصص لكل مركبة</p>
+            </div>
+            <div class="panel-controls">
+              <button class="btn btn-primary" onclick="openNewVehicleModal()">
+                <i class="fa-solid fa-car"></i> <span data-i18n="btnAddVehicle">إضافة مركبة جديدة للأسطول</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thPlate">رقم اللوحة</th>
+                  <th data-i18n="thVehicleModel">النوع والموديل</th>
+                  <th data-i18n="thYear">سنة الصنع</th>
+                  <th data-i18n="thCurrentProject">المشروع الحالي</th>
+                  <th data-i18n="thAssignedDriver">السائق المخصص للمركبة</th>
+                  <th data-i18n="thCurrentOdo">قراءة العداد الحالية</th>
+                  <th data-i18n="thLastMaintenance">تاريخ آخر صيانة</th>
+                  <th data-i18n="thActions">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="vehicles-table-body">
+                <!-- مولد بالجافاسكربت -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 4: إدارة السائقين والفنيين (خاص بالمديرين) -->
+      <section id="tab-technicians" class="tab-pane hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-users-gear"></i> <span data-i18n="techsTitle">إدارة السائقين وفنيي المشاريع</span></h2>
+              <p class="text-muted" data-i18n="techsSubtitle">إضافة حسابات السائقين وربط كل سائق بمركبته المخصصة ومشروعه</p>
+            </div>
+            <div class="panel-controls">
+              <button class="btn btn-primary" onclick="openNewTechnicianModal()">
+                <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAddTech">إضافة سائق / فني جديد</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thDriverTech">السائق / الفني</th>
+                  <th data-i18n="thUsername">اسم المستخدم</th>
+                  <th data-i18n="thPhone">رقم الجوال</th>
+                  <th data-i18n="thLinkedProject">المشروع المربوط به</th>
+                  <th data-i18n="thAssignedVehicle">السيارة المخصصة له فقط</th>
+                  <th data-i18n="thCardsCount">عدد كروت الصيانة</th>
+                  <th data-i18n="thStatus">الحالة</th>
+                  <th data-i18n="thActions">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="techs-table-body">
+                <!-- مولد بالجافاسكربت -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 5: إدارة المديرين (الجديد - بناء على طلب المستخدم لإضافة مديرين لمتابعة حركة السيارات) -->
+      <section id="tab-admins" class="tab-pane hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-user-shield"></i> <span data-i18n="adminsTitle">إدارة مديري النظام ومتابعة الحركة</span></h2>
+              <p class="text-muted" data-i18n="adminsSubtitle">إضافة وتعيين مديرين لمتابعة أسطول السيارات والمشاريع وكروت الصيانة</p>
+            </div>
+            <div class="panel-controls">
+              <button class="btn btn-accent" onclick="openNewAdminModal()">
+                <i class="fa-solid fa-user-plus"></i> <span data-i18n="btnAddAdmin">إضافة مدير جديد</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th data-i18n="thAdminName">اسم المدير</th>
+                  <th data-i18n="thUsername">اسم المستخدم</th>
+                  <th data-i18n="thPhone">رقم الجوال</th>
+                  <th data-i18n="thRole">الدور والمسمى</th>
+                  <th data-i18n="thStatus">الحالة</th>
+                  <th data-i18n="thActions">الإجراءات</th>
+                </tr>
+              </thead>
+              <tbody id="admins-table-body">
+                <!-- مولد بالجافاسكربت -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- تبويب 6: التقارير والنسخ الاحتياطي (خاص بالمديرين) -->
+      <section id="tab-analytics" class="tab-pane hidden">
+        <div class="panel">
+          <div class="panel-header">
+            <div class="panel-title">
+              <h2><i class="fa-solid fa-chart-pie"></i> <span data-i18n="analyticsTitle">مركز التقارير وإدارة البيانات الاحتياطية</span></h2>
+              <p class="text-muted" data-i18n="analyticsSubtitle">تصدير التقارير المحاسبية واستخراج نسخة احتياطية آمنة</p>
+            </div>
+          </div>
+
+          <!-- مركز تصدير التقارير واستخراج كروت الصيانة المتطور (Excel & PDF) -->
+          <div class="panel mb-4" style="background: #f8fafc; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 22px; margin-bottom: 24px;">
+            <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; margin-bottom: 16px; border-bottom: 2px solid var(--border-light); padding-bottom: 12px;">
+              <div>
+                <h3 style="color: var(--color-primary); margin: 0 0 4px; font-size: 1.15rem; display: flex; align-items: center; gap: 8px;">
+                  <i class="fa-solid fa-file-invoice-dollar" style="color: var(--color-accent);"></i> <span data-i18n="exportCenterTitle">مركز تصدير التقارير واستخراج كروت الصيانة (Excel & PDF)</span>
+                </h3>
+                <p class="text-muted" style="margin: 0; font-size: 0.88rem;" data-i18n="exportCenterSubtitle">
+                  تصدير تقارير صيانة متكاملة لجميع سيارات الأسطول دفعة واحدة أو تخصيص سيارة معينة بضغطة زر
+                </p>
+              </div>
+            </div>
+
+            <!-- خيار التحديد: تنزيل الكل أو تخصيص سيارة -->
+            <div style="display: flex; flex-direction: column; gap: 16px; margin-bottom: 20px;">
+              <div>
+                <label style="font-weight: 700; font-size: 0.92rem; color: var(--color-primary); display: block; margin-bottom: 8px;">
+                  <i class="fa-solid fa-sliders"></i> <span data-i18n="exportScopeLabel">حدد نطاق التصدير والتقرير المطلوب:</span>
+                </label>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+                  <label class="radio-option-btn">
+                    <input type="radio" name="export-scope" id="scope-all" value="all" checked onchange="toggleExportVehicleScope()">
+                    <span><i class="fa-solid fa-truck-ramp-box"></i> <span data-i18n="exportScopeAll">تنزيل لجميع سيارات الأسطول (الكل)</span></span>
+                  </label>
+                  <label class="radio-option-btn">
+                    <input type="radio" name="export-scope" id="scope-vehicle" value="specific" onchange="toggleExportVehicleScope()">
+                    <span><i class="fa-solid fa-car-side"></i> <span data-i18n="exportScopeSpecific">تخصيص سيارة معينة من الأسطول</span></span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- حقل اختيار السيارة عند تفعيل خيار التخصيص -->
+              <div id="export-vehicle-wrap" class="hidden" style="max-width: 480px;">
+                <label for="export-vehicle-select" style="font-weight: 700; font-size: 0.88rem; margin-bottom: 6px; display: block;">
+                  <i class="fa-solid fa-car"></i> <span data-i18n="exportSelectVehicleLabel">اختر المركبة المراد تصدير تقريرها:</span>
+                </label>
+                <select id="export-vehicle-select" class="form-control" style="font-weight: 600;">
+                  <option value="" data-i18n="exportLoadingVehicles">-- جارٍ تحميل سيارات الأسطول --</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- أزرار الإجراءات: Excel و PDF -->
+            <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-outline-primary" onclick="handleCustomExcelExport()">
+                <i class="fa-solid fa-file-excel" style="color: #107c41; font-size: 1.15rem;"></i> <span data-i18n="btnExportExcel">تصدير البيانات إلى Excel (CSV)</span>
+              </button>
+              <button type="button" class="btn btn-accent" onclick="handleCustomPDFReport()">
+                <i class="fa-solid fa-file-pdf" style="font-size: 1.15rem;"></i> <span data-i18n="btnExportPDF">إصدار وطباعة تقرير الصيانة الشامل (A4 PDF)</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="backup-grid">
+
+            <div class="backup-card">
+              <div class="backup-icon text-accent">
+                <i class="fa-solid fa-database"></i>
+              </div>
+              <div class="backup-details">
+                <h3 data-i18n="backupTitle">نسخة احتياطية كاملة (JSON)</h3>
+                <p data-i18n="backupDesc">تصدير قاعدة البيانات بالكامل (المشاريع، الفنيين، كروت الصيانة والصور) لحفظها بأمان.</p>
+                <button class="btn btn-accent" onclick="exportFullBackupJSON()">
+                  <i class="fa-solid fa-file-export"></i> <span data-i18n="btnDownloadBackup">تحميل النسخة الاحتياطية</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="backup-card">
+              <div class="backup-icon text-muted">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <div class="backup-details">
+                <h3 data-i18n="restoreTitle">استعادة نسخة احتياطية</h3>
+                <p data-i18n="restoreDesc">استرجاع بيانات المشاريع والكروت من ملف JSON تم تصديره سابقاً.</p>
+                <label class="btn btn-outline-secondary file-upload-btn">
+                  <i class="fa-solid fa-upload"></i> <span data-i18n="btnChooseBackupFile">اختيار ملف النسخة الاحتياطية</span>
+                  <input type="file" id="import-backup-file" accept=".json" onchange="importBackupJSON(event)" style="display: none;">
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <!-- سجل النشاط والعمليات -->
+          <div class="audit-section mt-4">
+            <div class="d-flex justify-between align-center mb-2">
+              <h3><i class="fa-solid fa-shield-virus"></i> <span data-i18n="auditTitle">سجل الأمان والعمليات (Audit Trail)</span></h3>
+              <button class="btn btn-sm btn-outline-danger" onclick="clearAuditLog()" data-i18n="btnClearAudit">مسح السجل</button>
+            </div>
+            <div class="table-responsive">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th data-i18n="thAuditTime">الوقت والتاريخ</th>
+                    <th data-i18n="thAuditUser">المستخدم</th>
+                    <th data-i18n="thAuditType">النوع</th>
+                    <th data-i18n="thAuditDetails">تفاصيل العملية</th>
+                    <th data-i18n="thAuditTarget">المشروع / المركبة</th>
+                  </tr>
+                </thead>
+                <tbody id="audit-table-body">
+                  <!-- مولد بالجافاسكربت -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- التذييل -->
+    <footer class="app-footer">
+      <div><span data-i18n="footerText">نظام كروت صيانة المركبات والمشاريع</span> © <span id="current-year"></span> | <strong data-i18n="companyName">شركة الأداء المتوازن للمقاولات</strong></div>
+      <div class="text-muted"><i class="fa-solid fa-shield-halved"></i> <span data-i18n="footerSecure">محمي بنظام أمان وفصل بيانات متطور</span></div>
+    </footer>
+
+  </div>
+
+  <!-- ==================== النوافذ المنبثقة (MODALS) ==================== -->
+
+  <!-- 1. نافذة إنشاء / تعديل كرت صيانة سيارة -->
+  <div id="modal-card" class="modal-backdrop hidden">
+    <div class="modal-box modal-lg">
+      <div class="modal-header">
+        <h3 id="modal-card-title"><i class="fa-solid fa-file-circle-plus"></i> <span data-i18n="modalCardNewTitle">كرت صيانة سيارة جديد</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-card')">&times;</button>
+      </div>
+      
+      <form id="card-form" onsubmit="handleSaveCard(event)">
+        <input type="hidden" id="card-id">
+
+        <div class="modal-body">
+          
+          <div class="alert-info-banner">
+            <i class="fa-solid fa-circle-info"></i>
+            <span data-i18n="modalCardAlertBanner">برجاء إرفاق صورة العداد الحالي وصورة الفاتورة وصورة الفلاتر/القطع المستبدلة لاعتماد الصرف.</span>
+          </div>
+
+          <!-- صف بيانات المشروع والمركبة -->
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label for="card-project"><i class="fa-solid fa-building"></i> <span data-i18n="lblCardProject">اسم المشروع</span> <span class="req">*</span></label>
+              <select id="card-project" class="form-control" required onchange="onProjectSelectChanged()">
+                <option value="" data-i18n="optSelectProject">-- اختر المشروع --</option>
+              </select>
+            </div>
+
+            <!-- عند دخول السائق تظهر له سيارته المخصصة فقط -->
+            <div class="form-group col-md-6">
+              <label for="card-vehicle"><i class="fa-solid fa-car"></i> <span data-i18n="lblCardVehicle">السيارة المخصصة / رقم اللوحة</span> <span class="req">*</span></label>
+              <select id="card-vehicle" class="form-control" required onchange="onVehicleSelectChanged()">
+                <option value="" data-i18n="optSelectVehicle">-- اختر السيارة --</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="card-vehicle-model" data-i18n="lblVehicleModel">نوع المركبة والموديل</label>
+              <input type="text" id="card-vehicle-model" class="form-control" data-i18n-placeholder="phVehicleModel" placeholder="موديل المركبة" readonly>
+            </div>
+            
+            <div class="form-group col-md-4">
+              <label for="card-tech-name" data-i18n="lblTechName">اسم السائق / الفني المسؤول</label>
+              <input type="text" id="card-tech-name" class="form-control" readonly>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="card-date"><i class="fa-regular fa-calendar-days"></i> <span data-i18n="lblMaintenanceDate">تاريخ الصيانة</span> <span class="req">*</span></label>
+              <input type="date" id="card-date" class="form-control" required>
+            </div>
+          </div>
+
+          <!-- قسم العداد وغيار الزيت الحالي فقط (بناءً على طلب المستخدم) -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-gauge-high"></i> <span data-i18n="dividerOdometer">قراءة عداد السيارة / غيار الزيت الحالي</span>
+          </div>
+
+          <div class="form-group">
+            <label for="card-odometer-current">
+              <i class="fa-solid fa-speedometer"></i> <span data-i18n="lblCurrentOdometer">قراءة العداد الحالية لغيار الزيت (كيلومتر)</span> <span class="req">*</span>
+            </label>
+            <input type="number" id="card-odometer-current" class="form-control highlight-input" min="0" data-i18n-placeholder="phCurrentOdo" placeholder="أدخل قراءة العداد الحالية بالأرقام (مثال: 145200)" required>
+          </div>
+
+          <!-- خيار توفر الصور ومرفقات الصيانة (لتسجيل غيارات الزيت السابقة بدون صور) -->
+          <div class="photo-availability-header">
+            <div>
+              <strong><i class="fa-solid fa-camera-rotate"></i> <span data-i18n="photoAvailQuestion">هل تتوفر صور ومرفقات لهذه الصيانة؟</span></strong>
+              <small class="d-block text-muted" data-i18n="photoAvailHelp">اختر "لا" لتسجيل غيارات الزيت والصيانات السابقة دفترياً بدون صور</small>
+            </div>
+            <div class="photo-toggle-options">
+              <button type="button" id="btn-photos-yes" class="photo-toggle-btn active" onclick="setGeneralPhotoAvailability(true)">
+                <i class="fa-solid fa-check"></i> <span data-i18n="btnPhotosYes">نعم، تتوفر صور</span>
+              </button>
+              <button type="button" id="btn-photos-no" class="photo-toggle-btn" onclick="setGeneralPhotoAvailability(false)">
+                <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="btnPhotosNo">لا، صيانة سابقة (بدون صور)</span>
+              </button>
+            </div>
+          </div>
+          <input type="hidden" id="card-has-photos" value="yes">
+
+          <!-- مرفق 1: صورة العداد -->
+          <div class="attachment-upload-box" id="box-attachment-odometer">
+            <div class="upload-label">
+              <div class="d-flex align-center justify-between">
+                <div>
+                  <i class="fa-solid fa-camera"></i>
+                  <strong><span data-i18n="attachOdoTitle">إرفاق صورة العداد الحالي</span> <span id="req-star-odometer" class="req">*</span></strong>
+                </div>
+                <label class="single-photo-toggle" title="تحديد هل تتوفر صورة العداد أم لا">
+                  <input type="checkbox" id="chk-has-odometer-img" checked onchange="toggleSinglePhotoInput('odometer')">
+                  <span data-i18n="chkHasPhoto">تتوفر صورة</span>
+                </label>
+              </div>
+              <small data-i18n="attachOdoHelp">(تصوير واضح للوحة العداد لإثبات الكيلومترات الفعلية لغيار الزيت)</small>
+            </div>
+            <div class="upload-controls" id="controls-odometer">
+              <input type="file" id="img-odometer-input" accept="image/*" capture="environment" onchange="handleImageUpload(event, 'img-odometer-preview', 'img-odometer-val')">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('img-odometer-input').click()">
+                <i class="fa-solid fa-camera"></i> <span data-i18n="btnUploadOdo">التقاط أو رفع صورة العداد</span>
+              </button>
+            </div>
+            <input type="hidden" id="img-odometer-val">
+            <div id="img-odometer-preview" class="image-preview-zone">
+              <div class="preview-placeholder">
+                <i class="fa-solid fa-image"></i>
+                <span data-i18n="phNoOdoImg">لم يتم إرفاق صورة العداد بعد</span>
+              </div>
+            </div>
+            <div id="no-photo-badge-odometer" class="no-photo-badge hidden">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="badgeNoOdoImg">صيانة سابقة - تم تسجيل القراءة بدون صورة للعداد</span>
+            </div>
+          </div>
+
+          <!-- قسم الفاتورة والتكلفة -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-receipt"></i> <span data-i18n="dividerInvoice">بيانات الفاتورة ومركز الصيانة</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">
+              <label for="card-invoice-number"><span data-i18n="lblInvoiceNo">رقم الفاتورة</span> <span class="req">*</span></label>
+              <input type="text" id="card-invoice-number" class="form-control" data-i18n-placeholder="phInvoiceNo" placeholder="مثال: INV-1092" required>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="card-cost"><i class="fa-solid fa-money-bill-wave"></i> <span data-i18n="lblInvoiceCost">إجمالي مبلغ الفاتورة (ر.س)</span> <span class="req">*</span></label>
+              <input type="number" id="card-cost" step="0.01" min="0" class="form-control highlight-input" data-i18n-placeholder="phInvoiceCost" placeholder="مثال: 320.00" required>
+            </div>
+
+            <div class="form-group col-md-4">
+              <label for="card-workshop"><span data-i18n="lblWorkshop">اسم الورشة / مركز الصيانة</span> <span class="req">*</span></label>
+              <input type="text" id="card-workshop" class="form-control" data-i18n-placeholder="phWorkshop" placeholder="مثال: مركز بترومين إكسبريس" required>
+            </div>
+          </div>
+
+          <!-- مرفق 2: صورة الفاتورة -->
+          <div class="attachment-upload-box" id="box-attachment-invoice">
+            <div class="upload-label">
+              <div class="d-flex align-center justify-between">
+                <div>
+                  <i class="fa-solid fa-file-invoice-dollar"></i>
+                  <strong><span data-i18n="attachInvoiceTitle">إرفاق صورة الفاتورة الأصلية</span> <span id="req-star-invoice" class="req">*</span></strong>
+                </div>
+                <label class="single-photo-toggle" title="تحديد هل تتوفر صورة الفاتورة أم لا">
+                  <input type="checkbox" id="chk-has-invoice-img" checked onchange="toggleSinglePhotoInput('invoice')">
+                  <span data-i18n="chkHasPhoto">تتوفر صورة</span>
+                </label>
+              </div>
+              <small data-i18n="attachInvoiceHelp">(صورة واضحة توضح الأصناف والمبلغ والختم الضريبي)</small>
+            </div>
+            <div class="upload-controls" id="controls-invoice">
+              <input type="file" id="img-invoice-input" accept="image/*" capture="environment" onchange="handleImageUpload(event, 'img-invoice-preview', 'img-invoice-val')">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('img-invoice-input').click()">
+                <i class="fa-solid fa-camera"></i> <span data-i18n="btnUploadInvoice">التقاط أو رفع صورة الفاتورة</span>
+              </button>
+            </div>
+            <input type="hidden" id="img-invoice-val">
+            <div id="img-invoice-preview" class="image-preview-zone">
+              <div class="preview-placeholder">
+                <i class="fa-solid fa-file-invoice"></i>
+                <span data-i18n="phNoInvoiceImg">لم يتم إرفاق صورة الفاتورة بعد</span>
+              </div>
+            </div>
+            <div id="no-photo-badge-invoice" class="no-photo-badge hidden">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="badgeNoInvoiceImg">صيانة سابقة - تم التقييد بدون صورة للفاتورة</span>
+            </div>
+          </div>
+
+          <!-- قسم الأعمال والقطع المستبدلة (فلاتر - زيوت - صيانة) -->
+          <div class="form-section-divider">
+            <i class="fa-solid fa-filter"></i> <span data-i18n="dividerParts">تفاصيل التغييرات والفلاتر وأعمال الصيانة</span>
+          </div>
+
+          <div class="form-group">
+            <label><i class="fa-solid fa-tags"></i> <span data-i18n="lblQuickTags">خيارات سريعة للتحديد:</span></label>
+            <div class="quick-tags-wrap">
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'تغيير زيت المحرك')"><span data-i18n="chipEngineOil">+ زيت محرك</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'استبدال فلتر الزيت (السيفون)')"><span data-i18n="chipOilFilter">+ فلتر زيت</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'استبدال فلتر الهواء')"><span data-i18n="chipAirFilter">+ فلتر هواء</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'استبدال فلتر المكيف')"><span data-i18n="chipAcFilter">+ فلتر مكيف</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'استبدال فلتر الديزل/البنزين')"><span data-i18n="chipFuelFilter">+ فلتر وقود</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'تغيير أقمشة الفرامل')"><span data-i18n="chipBrakes">+ فرامل</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'تبديل زيت الجيربوكس')"><span data-i18n="chipGearOil">+ زيت جير</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'صيانة أو تبديل البطارية')"><span data-i18n="chipBattery">+ بطارية</span></button>
+              <button type="button" class="tag-chip" onclick="toggleQuickTag(this, 'تبديل إطارات / ترصيص')"><span data-i18n="chipTires">+ إطارات</span></button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="card-changes-desc">
+              <i class="fa-solid fa-pencil"></i> <span data-i18n="lblChangesDesc">كتابة ما هي التغيرات وأعمال الصيانة المنفذة بالتفصيل</span> <span class="req">*</span>
+            </label>
+            <textarea id="card-changes-desc" class="form-control" rows="4" data-i18n-placeholder="phChangesDesc" placeholder="مثال: تم تغيير زيت المحرك نوع 10W40 (6 علب) مع استبدال فلتر الزيت الأصلي واستبدال فلتر الهواء وفحص السيور..." required></textarea>
+          </div>
+
+          <!-- مرفق 3: صورة الفلاتر أو القطع المستبدلة أثناء الصيانة -->
+          <div class="attachment-upload-box" id="box-attachment-parts">
+            <div class="upload-label">
+              <div class="d-flex align-center justify-between">
+                <div>
+                  <i class="fa-solid fa-tools"></i>
+                  <strong><span data-i18n="attachPartsTitle">إرفاق صورة عند تغيير الفلاتر أو الصيانة</span> <span id="req-star-parts" class="req">*</span></strong>
+                </div>
+                <label class="single-photo-toggle" title="تحديد هل تتوفر صورة الفلاتر أم لا">
+                  <input type="checkbox" id="chk-has-parts-img" checked onchange="toggleSinglePhotoInput('parts')">
+                  <span data-i18n="chkHasPhoto">تتوفر صورة</span>
+                </label>
+              </div>
+              <small data-i18n="attachPartsHelp">(صورة توضح الفلاتر أو القطع التي تم استبدالها أثناء العمل)</small>
+            </div>
+            <div class="upload-controls" id="controls-parts">
+              <input type="file" id="img-parts-input" accept="image/*" capture="environment" onchange="handleImageUpload(event, 'img-parts-preview', 'img-parts-val')">
+              <button type="button" class="btn btn-outline-primary btn-sm" onclick="document.getElementById('img-parts-input').click()">
+                <i class="fa-solid fa-camera"></i> <span data-i18n="btnUploadParts">التقاط أو رفع صورة الفلاتر والقطع</span>
+              </button>
+            </div>
+            <input type="hidden" id="img-parts-val">
+            <div id="img-parts-preview" class="image-preview-zone">
+              <div class="preview-placeholder">
+                <i class="fa-solid fa-gears"></i>
+                <span data-i18n="phNoPartsImg">لم يتم إرفاق صورة القطع والفلاتر بعد</span>
+              </div>
+            </div>
+            <div id="no-photo-badge-parts" class="no-photo-badge hidden">
+              <i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="badgeNoPartsImg">صيانة سابقة - تم التقييد بدون صورة للقطع</span>
+            </div>
+          </div>
+
+          <!-- ملاحظات إضافية -->
+          <div class="form-group">
+            <label for="card-notes"><i class="fa-regular fa-comment-dots"></i> <span data-i18n="lblNotes">ملاحظات السائق أو توصيات الصيانة:</span></label>
+            <input type="text" id="card-notes" class="form-control" data-i18n-placeholder="phNotes" placeholder="أي ملاحظات فنية إضافية">
+          </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-card')" data-i18n="btnCancel">إلغاء</button>
+          <button type="submit" class="btn btn-accent" id="btn-save-card">
+            <i class="fa-solid fa-floppy-disk"></i> <span data-i18n="btnSaveCard">حفظ واعتماد كرت الصيانة</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. نافذة عرض وطباعة كرت الصيانة الرسمي -->
+  <div id="modal-view-card" class="modal-backdrop hidden">
+    <div class="modal-box modal-xl printable-modal">
+      <div class="modal-header no-print">
+        <h3><i class="fa-solid fa-file-invoice"></i> <span data-i18n="modalViewCardTitle">معاينة كرت صيانة المركبة الرسمي</span></h3>
+        <div class="modal-header-actions">
+          <button class="btn btn-outline-primary btn-sm" onclick="printMaintenanceCard()">
+            <i class="fa-solid fa-print"></i> <span data-i18n="btnPrintCardPDF">طباعة الكرت / تصدير PDF</span>
+          </button>
+          <button class="modal-close" onclick="closeModal('modal-view-card')">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body print-area" id="printable-card-content">
+        <!-- المحتوى المولد تلقائياً لطباعة كرت رسمي -->
+      </div>
+
+      <div class="modal-footer no-print">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-view-card')" data-i18n="btnClose">إغلاق</button>
+        <button type="button" class="btn btn-accent" onclick="printMaintenanceCard()">
+          <i class="fa-solid fa-print"></i> <span data-i18n="btnPrintCardA4">طباعة كرت الصيانة الرسمي (A4)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2.1 نافذة عرض وطباعة تقرير الصيانة الشامل (PDF A4) لجميع السيارات أو لسيارة محددة -->
+  <div id="modal-view-fleet-report" class="modal-backdrop hidden">
+    <div class="modal-box modal-xl printable-modal">
+      <div class="modal-header no-print">
+        <h3 id="fleet-report-title"><i class="fa-solid fa-file-pdf"></i> <span data-i18n="modalViewFleetReportTitle">تقرير صيانة أسطول المركبات الشامل</span></h3>
+        <div class="modal-header-actions">
+          <button class="btn btn-outline-primary btn-sm" onclick="printFleetReport()">
+            <i class="fa-solid fa-print"></i> <span data-i18n="btnPrintReportPDF">طباعة التقرير / حفظ PDF</span>
+          </button>
+          <button class="modal-close" onclick="closeModal('modal-view-fleet-report')">&times;</button>
+        </div>
+      </div>
+
+      <div class="modal-body print-area" id="printable-fleet-report-content">
+        <!-- المحتوى المولد تلقائياً لطباعة التقرير الشامل -->
+      </div>
+
+      <div class="modal-footer no-print">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('modal-view-fleet-report')" data-i18n="btnClose">إغلاق</button>
+        <button type="button" class="btn btn-accent" onclick="printFleetReport()">
+          <i class="fa-solid fa-print"></i> <span data-i18n="btnPrintReportA4">طباعة التقرير الشامل (A4)</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. نافذة إدارة المشاريع (إضافة / تعديل) -->
+  <div id="modal-project" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-project-title"><i class="fa-solid fa-diagram-project"></i> <span data-i18n="modalProjectTitle">إضافة مشروع جديد</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-project')">&times;</button>
+      </div>
+      <form id="project-form" onsubmit="handleSaveProject(event)">
+        <input type="hidden" id="project-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="project-code"><span data-i18n="lblProjectCode">كود المشروع</span> <span class="req">*</span></label>
+            <input type="text" id="project-code" class="form-control" data-i18n-placeholder="phProjectCode" placeholder="مثال: PRJ-2026-01" required>
+          </div>
+          <div class="form-group">
+            <label for="project-name"><span data-i18n="lblProjectName">اسم المشروع</span> <span class="req">*</span></label>
+            <input type="text" id="project-name" class="form-control" data-i18n-placeholder="phProjectName" placeholder="اسم المشروع التابع للشركة" required>
+          </div>
+          <div class="form-group">
+            <label for="project-location"><span data-i18n="lblProjectLocation">موقع العمل / المدينة</span> <span class="req">*</span></label>
+            <input type="text" id="project-location" class="form-control" data-i18n-placeholder="phProjectLocation" placeholder="مثال: الرياض - طريق الملك فهد" required>
+          </div>
+          <div class="form-group">
+            <label for="project-manager"><span data-i18n="lblProjectManager">مدير المشروع المسؤول</span></label>
+            <input type="text" id="project-manager" class="form-control" data-i18n-placeholder="phProjectManager" placeholder="اسم مهندس الموقع المسؤول">
+          </div>
+          <div class="form-group">
+            <label for="project-status"><span data-i18n="lblProjectStatus">حالة المشروع</span></label>
+            <select id="project-status" class="form-control">
+              <option value="active" data-i18n="optStatusActive">نشط وقائم</option>
+              <option value="pending" data-i18n="optStatusPending">تحت التجهيز</option>
+              <option value="completed" data-i18n="optStatusCompleted">مكتمل</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-project')" data-i18n="btnCancel">إلغاء</button>
+          <button type="submit" class="btn btn-primary" data-i18n="btnSaveProject">حفظ المشروع</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. نافذة إدارة المركبات (إضافة / تعديل) وتعيين السائق المخصص -->
+  <div id="modal-vehicle" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-vehicle-title"><i class="fa-solid fa-car-side"></i> <span data-i18n="modalVehicleTitle">إضافة مركبة جديدة</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-vehicle')">&times;</button>
+      </div>
+      <form id="vehicle-form" onsubmit="handleSaveVehicle(event)">
+        <input type="hidden" id="vehicle-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="vehicle-plate"><span data-i18n="lblVehiclePlate">رقم اللوحة</span> <span class="req">*</span></label>
+            <input type="text" id="vehicle-plate" class="form-control" data-i18n-placeholder="phVehiclePlate" placeholder="مثال: أ ب ج 1234" required>
+          </div>
+          <div class="form-group">
+            <label for="vehicle-model"><span data-i18n="lblVehicleModelReq">النوع والموديل</span> <span class="req">*</span></label>
+            <input type="text" id="vehicle-model" class="form-control" data-i18n-placeholder="phVehicleModelReq" placeholder="مثال: تويوتا هايلوكس غمارة" required>
+          </div>
+          <div class="form-group">
+            <label for="vehicle-year"><span data-i18n="lblVehicleYear">سنة الصنع</span></label>
+            <input type="number" id="vehicle-year" class="form-control" placeholder="2023" min="1990" max="2035">
+          </div>
+          <div class="form-group">
+            <label for="vehicle-project"><span data-i18n="lblVehicleProject">المشروع التابعة له</span> <span class="req">*</span></label>
+            <select id="vehicle-project" class="form-control" required>
+              <option value="" data-i18n="optSelectProject">-- اختر المشروع --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="vehicle-driver"><span data-i18n="lblVehicleDriver">السائق المخصص للمركبة (يظهر له هذه السيارة فقط)</span> <span class="req">*</span></label>
+            <input type="text" id="vehicle-driver" class="form-control" data-i18n-placeholder="phVehicleDriver" placeholder="اسم السائق المخصص لهذه السيارة" required>
+          </div>
+          <div class="form-group">
+            <label for="vehicle-current-odo"><span data-i18n="lblVehicleOdo">قراءة العداد الحالية (كم)</span></label>
+            <input type="number" id="vehicle-current-odo" class="form-control" data-i18n-placeholder="phVehicleOdo" placeholder="قراءة العداد الحالية" min="0">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-vehicle')" data-i18n="btnCancel">إلغاء</button>
+          <button type="submit" class="btn btn-primary" data-i18n="btnSaveVehicle">حفظ المركبة</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 5. نافذة إدارة السائقين والفنيين (إضافة / تعديل) -->
+  <div id="modal-tech" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-tech-title"><i class="fa-solid fa-user-gear"></i> <span data-i18n="modalTechTitle">إضافة سائق / فني جديد</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-tech')">&times;</button>
+      </div>
+      <form id="tech-form" onsubmit="handleSaveTechnician(event)">
+        <input type="hidden" id="tech-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="tech-fullname"><span data-i18n="lblTechFullname">اسم السائق / الفني بالكامل</span> <span class="req">*</span></label>
+            <input type="text" id="tech-fullname" class="form-control" data-i18n-placeholder="phTechFullname" placeholder="اسم السائق الثلاثي أو الرباعي" required>
+          </div>
+          <div class="form-group">
+            <label for="tech-username"><span data-i18n="lblTechUsername">اسم المستخدم لتسجيل الدخول</span> <span class="req">*</span></label>
+            <input type="text" id="tech-username" class="form-control" data-i18n-placeholder="phTechUsername" placeholder="اسم مستخدم فريد (مثال: ahmed_driver)" required>
+          </div>
+          <div class="form-group">
+            <label for="tech-password"><span data-i18n="lblPassword">كلمة المرور</span> <span id="tech-pass-req" class="req">*</span></label>
+            <input type="password" id="tech-password" class="form-control" data-i18n-placeholder="phTechPassword" placeholder="أدخل كلمة مرور السائق">
+            <small class="text-muted" id="tech-pass-hint" data-i18n="techPassHint">اترك الحقل فارغاً عند التعديل إذا كنت لا ترغب بتغييرها</small>
+          </div>
+          <div class="form-group">
+            <label for="tech-phone"><span data-i18n="lblPhone">رقم الجوال</span></label>
+            <input type="tel" id="tech-phone" class="form-control" placeholder="05XXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label for="tech-project"><span data-i18n="lblTechProject">المشروع التابع له السائق</span> <span class="req">*</span></label>
+            <select id="tech-project" class="form-control" required onchange="onTechProjectChange()">
+              <option value="" data-i18n="optSelectProject">-- اختر المشروع --</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="tech-vehicle-plate"><span data-i18n="lblTechVehiclePlate">السيارة المخصصة لهذا السائق فقط</span> <span class="req">*</span></label>
+            <select id="tech-vehicle-plate" class="form-control" required>
+              <option value="" data-i18n="optSelectAssignedVehicle">-- اختر السيارة المخصصة له --</option>
+            </select>
+            <small class="text-muted" data-i18n="techVehicleHelp">عند دخول السائق ستظهر له هذه السيارة فقط ولن تظهر له أي سيارات أخرى.</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-tech')" data-i18n="btnCancel">إلغاء</button>
+          <button type="submit" class="btn btn-primary" data-i18n="btnSaveTech">حفظ بيانات السائق</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 6. نافذة إدارة المديرين الجديدة (خاص بالمدير الرئيسي لإضافة مديرين لمتابعة الأسطول) -->
+  <div id="modal-admin" class="modal-backdrop hidden">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-admin-title"><i class="fa-solid fa-user-shield"></i> <span data-i18n="modalAdminTitle">إضافة مدير جديد لمتابعة الأسطول</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-admin')">&times;</button>
+      </div>
+      <form id="admin-form" onsubmit="handleSaveAdmin(event)">
+        <input type="hidden" id="admin-user-id">
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="admin-fullname"><span data-i18n="lblAdminFullname">اسم المدير بالكامل</span> <span class="req">*</span></label>
+            <input type="text" id="admin-fullname" class="form-control" data-i18n-placeholder="phAdminFullname" placeholder="اسم المدير المسؤول" required>
+          </div>
+          <div class="form-group">
+            <label for="admin-username"><span data-i18n="lblAdminUsername">اسم المستخدم للدخول</span> <span class="req">*</span></label>
+            <input type="text" id="admin-username" class="form-control" data-i18n-placeholder="phAdminUsername" placeholder="اسم المستخدم" required>
+          </div>
+          <div class="form-group">
+            <label for="admin-role-title"><span data-i18n="lblAdminRoleTitle">المسمى الوظيفي / الدور</span></label>
+            <input type="text" id="admin-role-title" class="form-control" data-i18n-placeholder="phAdminRoleTitle" placeholder="مثال: مدير حركة ومعدات / مسؤول مشاريع">
+          </div>
+          <div class="form-group">
+            <label for="admin-phone"><span data-i18n="lblPhone">رقم الجوال</span></label>
+            <input type="tel" id="admin-phone" class="form-control" placeholder="05XXXXXXXX">
+          </div>
+          <div class="form-group">
+            <label for="admin-password"><span data-i18n="lblPassword">كلمة المرور</span> <span id="admin-pass-req" class="req">*</span></label>
+            <input type="password" id="admin-password" class="form-control" data-i18n-placeholder="phAdminPassword" placeholder="أدخل كلمة مرور قوية">
+            <small class="text-muted" id="admin-pass-hint" data-i18n="adminPassHint">اتركها فارغة عند التعديل إذا كنت لا ترغب بتغييرها</small>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('modal-admin')" data-i18n="btnCancel">إلغاء</button>
+          <button type="submit" class="btn btn-accent" data-i18n="btnSaveAdmin">حفظ حساب المدير</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 7. عارض الصور بالحجم الكامل (Lightbox Modal) -->
+  <div id="modal-lightbox" class="modal-backdrop hidden lightbox-backdrop" onclick="closeLightbox()">
+    <div class="lightbox-content" onclick="event.stopPropagation()">
+      <button class="lightbox-close" onclick="closeLightbox()">&times;</button>
+      <div class="lightbox-caption" id="lightbox-caption" data-i18n="lightboxCaption">عنوان الصورة</div>
+      <img id="lightbox-img" src="" alt="صورة مرفقة بالحجم الكامل">
+    </div>
+  </div>
+
+  <!-- ملف المنطق البرمجي الرئيسي -->
+  <script src="app.js"></script>
+</body>
+</html>
