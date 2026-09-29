@@ -284,6 +284,38 @@ body {
   font-size: 0.82rem;
 }
 
+.btn-link-subtle {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 6px 12px;
+  font-family: inherit;
+  font-weight: 600;
+  text-decoration: underline;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: var(--transition);
+}
+
+.btn-link-subtle:hover {
+  color: var(--color-accent);
+}
+
+.login-hint-badge {
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.83rem;
+  color: #475569;
+  margin-top: 14px;
+  text-align: center;
+  line-height: 1.5;
+}
+
 /* ==========================================================================
    الهيكل الداخلي للتطبيق (App Layout)
    ========================================================================== */

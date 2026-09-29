@@ -131,6 +131,12 @@
           <button type="submit" class="btn btn-accent btn-block btn-lg" id="btn-setup-admin">
             <i class="fa-solid fa-user-shield"></i> <span data-i18n="btnSetupAdmin">إنشاء حساب المدير الرئيسي وبدء التشغيل</span>
           </button>
+
+          <div style="text-align: center; margin-top: 14px;">
+            <button type="button" class="btn-link-subtle" onclick="toggleSetupAdminBox(false)">
+              <i class="fa-solid fa-arrow-right"></i> <span data-i18n="linkBackToLogin">العودة لشاشة تسجيل الدخول</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -159,6 +165,17 @@
           <button type="submit" class="btn btn-primary btn-block btn-lg" id="btn-login">
             <i class="fa-solid fa-right-to-bracket"></i> <span data-i18n="btnLogin">تسجيل الدخول</span>
           </button>
+
+          <div class="login-hint-badge">
+            <i class="fa-solid fa-key" style="color: var(--color-accent);"></i>
+            <span data-i18n="defaultAdminHint">بيانات المدير الافتراضية للتشغيل الفوري: اسم المستخدم: <strong>admin</strong> | كلمة المرور: <strong>admin</strong></span>
+          </div>
+
+          <div style="text-align: center; margin-top: 10px;">
+            <button type="button" class="btn-link-subtle" onclick="toggleSetupAdminBox(true)">
+              <i class="fa-solid fa-user-gear"></i> <span data-i18n="linkSetupNewAdmin">إعداد أو إنشاء حساب مدير رئيسي جديد</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -621,6 +638,28 @@
                   <i class="fa-solid fa-upload"></i> <span data-i18n="btnChooseBackupFile">اختيار ملف النسخة الاحتياطية</span>
                   <input type="file" id="import-backup-file" accept=".json" onchange="importBackupJSON(event)" style="display: none;">
                 </label>
+              </div>
+            </div>
+
+            <!-- بطاقة الربط والمزامنة السحابية الحقيقية بين الأجهزة -->
+            <div class="backup-card" style="border: 2px solid var(--color-accent); background: #f0fdf4;">
+              <div class="backup-icon text-accent">
+                <i class="fa-solid fa-cloud-bolt"></i>
+              </div>
+              <div class="backup-details">
+                <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px; flex-wrap:wrap;">
+                  <h3 style="margin:0;" data-i18n="cloudSyncTitle">المزامنة السحابية (Cloud Sync)</h3>
+                  <span id="cloud-status-badge" class="badge-status badge-pending">غير متصل بالسحابة</span>
+                </div>
+                <p data-i18n="cloudSyncDesc">ربط قاعدة بيانات سحابية موحدة لتمكين جميع السائقين والمديرين من رؤية وتحديث نفس البيانات لحظياً عبر الإنترنت.</p>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                  <button type="button" class="btn btn-sm btn-accent" onclick="openCloudSyncModal()">
+                    <i class="fa-solid fa-gear"></i> <span data-i18n="btnConfigureCloud">إعدادات الربط السحابي</span>
+                  </button>
+                  <button type="button" class="btn btn-sm btn-outline-primary" onclick="openSyncCodeModal()">
+                    <i class="fa-solid fa-share-nodes"></i> <span data-i18n="btnShareSyncData">مشاركة كود البيانات</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -1148,6 +1187,84 @@
       <img id="lightbox-img" src="" alt="صورة مرفقة بالحجم الكامل">
     </div>
   </div>
+
+  <!-- 8. نافذة إعدادات الربط السحابي (Firebase Cloud Sync Modal) -->
+  <div id="modal-cloud-sync" class="modal-backdrop hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-cloud-bolt text-accent"></i> <span data-i18n="cloudModalTitle">إعدادات الربط السحابي وقاعدة البيانات (Cloud Sync)</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-cloud-sync')">&times;</button>
+      </div>
+      <form id="cloud-sync-form" onsubmit="handleSaveCloudConfig(event)">
+        <div class="modal-body">
+          <div class="alert-info-banner">
+            <i class="fa-solid fa-circle-info"></i>
+            <span>تتيح المزامنة السحابية حفظ البيانات في قاعدة بيانات سحابية موحدة لكي يرى جميع السائقين والمديرين نفس المشاريع والسيارات والكروت في نفس اللحظة من أي جوال أو كمبيوتر عبر الإنترنت.</span>
+          </div>
+
+          <div class="form-group">
+            <label for="cloud-project-id"><strong>Firebase Project ID</strong> <span class="req">*</span></label>
+            <input type="text" id="cloud-project-id" class="form-control" placeholder="مثال: balanced-performance-fleet" required>
+          </div>
+
+          <div class="form-group">
+            <label for="cloud-api-key"><strong>Firebase API Key</strong> <span class="req">*</span></label>
+            <input type="text" id="cloud-api-key" class="form-control" placeholder="مثال: AIzaSyB..." required>
+          </div>
+
+          <div class="form-group">
+            <label for="cloud-app-id"><strong>Firebase App ID (اختياري)</strong></label>
+            <input type="text" id="cloud-app-id" class="form-control" placeholder="مثال: 1:123456789:web:abcdef">
+          </div>
+
+          <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:6px; padding:10px 14px; font-size:0.82rem; color:#475569;">
+            <i class="fa-solid fa-lightbulb text-warning"></i>
+            <span>يمكنك الحصول على هذه المفاتيح مجاناً من منصة Firebase Console (إنشاء مشروع مجاني -> إضافة تطبيق ويب Web App -> نسخ إعدادات config).</span>
+          </div>
+        </div>
+        <div class="modal-footer d-flex justify-between">
+          <button type="button" class="btn btn-outline-danger btn-sm" onclick="disconnectCloudSync()">
+            <i class="fa-solid fa-unlink"></i> إلغاء الربط (العودة للتخزين المحلي)
+          </button>
+          <div class="d-flex gap-2">
+            <button type="button" class="btn btn-secondary" onclick="closeModal('modal-cloud-sync')">إلغاء</button>
+            <button type="submit" class="btn btn-accent">حفظ وتفعيل المزامنة</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 9. نافذة مشاركة واستيراد كود البيانات السريع (Data Sync Code Modal) -->
+  <div id="modal-sync-code" class="modal-backdrop hidden">
+    <div class="modal-box modal-md">
+      <div class="modal-header">
+        <h3><i class="fa-solid fa-share-nodes text-accent"></i> <span>مشاركة واستيراد كود البيانات بين الأجهزة</span></h3>
+        <button class="modal-close" onclick="closeModal('modal-sync-code')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="text-muted" style="font-size:0.88rem;">
+          يمكنك نسخ كود البيانات الكامل ونقله عبر الواتساب أو البريد إلى أي جوال أو جهاز آخر، ثم الضغط على "استيراد الكود" لنقل كافة المشاريع والسيارات والسائقين في ثانية واحدة!
+        </p>
+        <div class="form-group">
+          <label><strong>كود البيانات المشفر (Sync Code):</strong></label>
+          <textarea id="sync-code-area" class="form-control" rows="5" placeholder="الصق كود البيانات هنا لنقله إلى هذا الجهاز..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer d-flex justify-between">
+        <button type="button" class="btn btn-outline-primary" onclick="copySyncCodeToClipboard()">
+          <i class="fa-solid fa-copy"></i> نسخ الكود للمشاركة
+        </button>
+        <button type="button" class="btn btn-accent" onclick="applySyncCodeImport()">
+          <i class="fa-solid fa-file-import"></i> استيراد وتطبيق البيانات
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- محرك المزامنة السحابية Firebase SDKs للربط اللحظي بين كافة الأجهزة والهواتف -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 
   <!-- ملف المنطق البرمجي الرئيسي -->
   <script src="app.js"></script>
